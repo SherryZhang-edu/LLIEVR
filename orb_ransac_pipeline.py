@@ -2,24 +2,8 @@ import cv2
 import numpy as np
 import os
 import time
+from utils.evaluation import load_darkzurich_rgb_list,load_tum_rgb_list
 
-
-def load_tum_rgb_list(sequence_path):
-    rgb_txt = os.path.join(sequence_path, "rgb.txt")
-
-    image_paths = []
-
-    with open(rgb_txt, "r") as f:
-        for line in f:
-            if line.startswith("#"):
-                continue
-            parts = line.strip().split()
-            if len(parts) == 2:
-                timestamp, filename = parts
-                full_path = os.path.join(sequence_path, filename)
-                image_paths.append(full_path)
-
-    return image_paths
 
 
 def match_orb_ransac(img1, img2, orb, bf):
@@ -62,9 +46,7 @@ def match_orb_ransac(img1, img2, orb, bf):
 
 
 
-def evaluate_sequence(sequence_path, max_frames=200):
-
-    image_list = load_tum_rgb_list(sequence_path)
+def evaluate_sequence(image_list, max_frames=200):
 
     print("Total images:", len(image_list))
 
@@ -118,5 +100,8 @@ def evaluate_sequence(sequence_path, max_frames=200):
 
 if __name__ == "__main__":
 
-    sequence_path = "datasets/lle/rgbd_desk"  
-    evaluate_sequence(sequence_path, max_frames=200)
+    # sequence_path = "datasets/lle/rgbd_desk"
+    # image_list = load_tum_rgb_list(sequence_path)
+    sequence_path = "datasets/lle/darkZurich/set1_resized"  
+    image_list = load_darkzurich_rgb_list(sequence_path)
+    evaluate_sequence(image_list, max_frames=200)

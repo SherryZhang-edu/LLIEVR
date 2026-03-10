@@ -2,23 +2,8 @@ import cv2
 import numpy as np
 import os
 import time
+from utils.evaluation import load_darkzurich_rgb_list,load_tum_rgb_list
 
-
-def load_tum_rgb_list(sequence_path):
-    rgb_txt = os.path.join(sequence_path, "rgb.txt")
-    image_paths = []
-
-    with open(rgb_txt, "r") as f:
-        for line in f:
-            if line.startswith("#"):
-                continue
-            parts = line.strip().split()
-            if len(parts) == 2:
-                timestamp, filename = parts
-                full_path = os.path.join(sequence_path, filename)
-                image_paths.append(full_path)
-
-    return image_paths
 
 
 def match_and_visualize(img1, img2, orb, bf):
@@ -82,11 +67,9 @@ def match_and_visualize(img1, img2, orb, bf):
     return vis, len(kp1), len(good), len(inlier_matches)
 
 
-def evaluate(sequence_path, save_dir="vis_output", max_frames=50):
+def evaluate_sequence(image_list, save_dir="vis_output", max_frames=50):
 
     os.makedirs(save_dir, exist_ok=True)
-
-    image_list = load_tum_rgb_list(sequence_path)
 
     orb = cv2.ORB_create(nfeatures=1000)
     bf = cv2.BFMatcher(cv2.NORM_HAMMING)
@@ -147,5 +130,7 @@ def evaluate(sequence_path, save_dir="vis_output", max_frames=50):
 
 if __name__ == "__main__":
 
-    sequence_path = "datasets/lle/rgbd_desk"
-    evaluate(sequence_path)
+    # sequence_path = "datasets/lle/darkZurich/set1_resized"
+    sequence_path = "experiments/results/darkZurich/set1_enhanced"  
+    image_list = load_darkzurich_rgb_list(sequence_path)
+    evaluate_sequence(image_list, save_dir='vis_output/set1_enhanced')

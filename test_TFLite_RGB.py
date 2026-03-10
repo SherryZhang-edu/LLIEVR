@@ -22,9 +22,9 @@ def print_model_structure(interpreter):
         print(f"Name: {output_tensor['name']}, Shape: {output_tensor['shape']}, Type: {output_tensor['dtype']}")
 
 def preprocess_image(image_path):
-    #target_size = (1024, 1024)
+    target_size = (600, 400)
     img = Image.open(image_path).convert("RGB")  
-    #img = img.resize(target_size, Image.BICUBIC)
+    img = img.resize(target_size, Image.BICUBIC)
     img_array = np.array(img).astype(np.float32) / 255.0  
     img_array = np.expand_dims(img_array, axis=0)  
     print(img_array.shape)
@@ -58,8 +58,9 @@ def inference_and_save_results(interpreter, input_image_folder, output_image_fol
 
 def main():
     model_path = 'lolv1.tflite'  
-    input_image_folder = 'datasets\lle\LOLdataset\eval15\low'  
-    output_image_folder = './experiments/results'
+    # input_image_folder = 'datasets\lle\LOLdataset\eval15\low'  
+    input_image_folder = "datasets\lle\darkZurich\set1"
+    output_image_folder = './experiments/results/zurich_set1'
 
     interpreter = load_model(model_path)
     print_model_structure(interpreter)

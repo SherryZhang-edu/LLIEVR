@@ -1,4 +1,4 @@
-from proxy_slam_evaluation import evaluate_sequence
+from llim_orb_ransac_pipeline import evaluate_sequence
 
 # image_list 是按顺序的图片路径列表
 

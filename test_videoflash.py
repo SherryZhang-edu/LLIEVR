@@ -1,5 +1,5 @@
 import os
-from proxy_slam_evaluation import evaluate_sequence
+from llim_orb_ransac_pipeline import evaluate_sequence
 from utils.evaluation import load_tum_rgb_list,load_darkzurich_rgb_list
 from utils.enhancer import load_model,  enhance_image_cv
 import cv2
@@ -31,7 +31,7 @@ def main():
     # image_list = image_list[:10]
 
     # ===============================
-    # 1Raw
+    # Raw
     # ===============================
     print("\nRunning RAW evaluation...")
     results_raw = evaluate_sequence(image_list,
@@ -44,7 +44,8 @@ def main():
     results_enhanced = evaluate_sequence(
         image_list,
         enhance=True,
-        enhance_mode='every'
+        enhance_mode='every',
+        save_vis=True, vis_save_dir = "experiments\\results\\RealData\\video3_flash_enhanced"
     )
     
     # ===============================
@@ -56,7 +57,7 @@ def main():
         enhance=True,
         enhance_mode='adaptive',
         tau_mu=50,
-        tau_I=10
+        tau_I=10,save_vis=True, vis_save_dir = "experiments\\results\\RealData\\video3_flash_adaptiveenhanced"
     )
 
     # ===============================

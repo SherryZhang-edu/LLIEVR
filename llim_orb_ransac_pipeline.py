@@ -149,7 +149,7 @@ def evaluate_sequence(
             if save_vis:
                 vis_path = os.path.join(vis_save_dir, os.path.basename(image_list[i]))
                 cv2.imwrite(vis_path, img)
-                print(f"Saved visualization: {vis_path}")
+                # print(f"Saved visualization: {vis_path}")
         else:
             pass  # 不增强，直接使用原图
 

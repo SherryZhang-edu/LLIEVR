@@ -7,8 +7,10 @@ import cv2
 
 model_path = 'lolv1.tflite'  
 # input_image_path = 'datasets\\lle\\darkZurich\\set1\\GP010376_frame_000297_rgb_anon.png'  
-# input_image_path = 'datasets\\lle\\LOLdataset\\eval15\\low\\665.png'
-input_image_path = "datasets\\RealData\\video1_indoor\\frame_0001.png"
+# input_image_path = 'datasets\\lle\\LOLdataset\\eval15\\low\\79.png'
+# input_image_path = "datasets\\RealData\\video4_office\\frame_0005.png"
+input_image_path = "datasets\\RealData\\video2_walk\\frame_0015.png"
+
 # 1. 加载模型（只需加载一次）
 interpreter = load_model(model_path)
 
@@ -34,7 +36,7 @@ try:
     print("MobielIE done！")
     
     # use gamma correction to enhance
-    enhanced_gamma = enhance_gamma(img_cv, gamma=0.4)
+    enhanced_gamma = enhance_gamma(img_cv, gamma=4)
     cv2.imwrite('enhanced_gamma.png', enhanced_gamma)
     print("Gamma correction done！")
     

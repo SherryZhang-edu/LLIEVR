@@ -1,107 +1,85 @@
+from llim_orb_ransac_pipeline import compute_detected_keypoints, compute_tentative_matches, compute_ransac_inliers, compute_inlier_ratio, compute_tracking_failure_rate
 import cv2
 import numpy as np
+from utils.evaluation import load_darkzurich_rgb_list
 import os
-import time
-from utils.evaluation import load_darkzurich_rgb_list,load_tum_rgb_list
 
-
-
-def match_orb_ransac(img1, img2, orb, bf):
-
-    gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-    gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-
-    kp1, des1 = orb.detectAndCompute(gray1, None)
-    kp2, des2 = orb.detectAndCompute(gray2, None)
-
-    if des1 is None or des2 is None:
-        return 0, 0, 0
-
-    matches = bf.knnMatch(des1, des2, k=2)
-
-    good = []
-    for m, n in matches:
-        if m.distance < 0.75 * n.distance:
-            good.append(m)
-
-    if len(good) < 8:
-        return len(kp1), len(good), 0
-
-    pts1 = np.float32([kp1[m.queryIdx].pt for m in good])
-    pts2 = np.float32([kp2[m.trainIdx].pt for m in good])
-
-    H, mask = cv2.findHomography(
-        pts1,
-        pts2,
-        cv2.RANSAC,
-        3.0
-    )
-
-    if mask is None:
-        return len(kp1), len(good), 0
-
-    inliers = int(mask.sum())
-
-    return len(kp1), len(good), inliers
-
-
-
-def evaluate_sequence(image_list, max_frames=200):
-
-    print("Total images:", len(image_list))
-
-    orb = cv2.ORB_create(nfeatures=1000)
+def evaluate_sequence(image_list,inlier_threshold=30,          
+        ):
+    orb = cv2.ORB_create(nfeatures=1500)
     bf = cv2.BFMatcher(cv2.NORM_HAMMING)
+    
+    keypoints_list = []
+    tentative_matches_list = []
+    inliers_list = []
+    inlier_ratio_list = []
+    
+    prev_img =  cv2.imread(image_list[0])
+    
+    prev_gray = cv2.cvtColor(prev_img, cv2.COLOR_BGR2GRAY)
+    prev_kp, prev_des = orb.detectAndCompute(prev_gray, None)
+    prev_inliers = 100
+    for i in range(1, len(image_list)):
+        
+        img = cv2.imread(image_list[i])
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        kp, des = orb.detectAndCompute(gray, None)
+        
+        # keypoints
+        keypoints_list.append(len(kp))
+            
+        if prev_des is None or des is None:
+            prev_kp, prev_des = kp, des
+            continue
+        
+        # tentative matches
+        good_matches = compute_tentative_matches(prev_des, des, bf)
+        tentative_matches = len(good_matches)
+        tentative_matches_list.append(tentative_matches)
 
-    total_keypoints = 0
-    total_matches = 0
-    total_inliers = 0
-    total_time = 0
+        # ransac inliers
+        inliers, mask = compute_ransac_inliers(prev_kp, kp, good_matches)
+        inliers_list.append(inliers)
+        
+        # inlier ratio
+        ratio = compute_inlier_ratio(inliers, tentative_matches)
+        inlier_ratio_list.append(ratio)
 
-    frame_count = min(len(image_list) - 1, max_frames)
-
-    for i in range(frame_count):
-
-        img1 = cv2.imread(image_list[i])
-        img2 = cv2.imread(image_list[i + 1])
-
-        start = time.time()
-
-        kp, matches, inliers = match_orb_ransac(img1, img2, orb, bf)
-
-        elapsed = time.time() - start
-
-        total_keypoints += kp
-        total_matches += matches
-        total_inliers += inliers
-        total_time += elapsed
-
-        if matches > 0:
-            inlier_ratio = inliers / matches
-        else:
-            inlier_ratio = 0
-
-        print(f"Frame {i}: KP={kp}, Matches={matches}, "
-              f"Inliers={inliers}, Ratio={inlier_ratio:.3f}, "
-              f"Time={elapsed*1000:.2f}ms")
-
-    print("\n===== Summary =====")
-    print("Avg keypoints:", total_keypoints / frame_count)
-    print("Avg matches:", total_matches / frame_count)
-    print("Avg inliers:", total_inliers / frame_count)
-
-    if total_matches > 0:
-        print("Overall inlier ratio:", total_inliers / total_matches)
-
-    print("Avg time per frame:", (total_time / frame_count) * 1000, "ms")
-    print("FPS:", frame_count / total_time)
-
-
+        prev_kp, prev_des = kp, des
+        prev_inliers = inliers
+        
+    # tracking failure rate
+    try:
+        failure_rate = compute_tracking_failure_rate(
+            inliers_list,
+            threshold=inlier_threshold
+        )
+    except:
+        failure_rate = 100.0
+    
+    
+    # ===========================
+    # 汇总统计
+    # ===========================
+    results = {
+        "avg_keypoints": np.mean(keypoints_list) if keypoints_list else 0,
+        "avg_tentative_matches": np.mean(tentative_matches_list) if tentative_matches_list else 0,
+        "avg_inliers": np.mean(inliers_list) if inliers_list else 0,
+        "avg_inlier_ratio": np.mean(inlier_ratio_list) if inlier_ratio_list else 0,
+        "tracking_failure_rate": failure_rate
+    }
+    
+    return results
 
 if __name__ == "__main__":
-
-    # sequence_path = "datasets/lle/rgbd_desk"
-    # image_list = load_tum_rgb_list(sequence_path)
-    sequence_path = "datasets/lle/darkZurich/set1_resized"  
+   
+    sequence_path  = "experiments/results/RealData/video3_flash_clahe"
     image_list = load_darkzurich_rgb_list(sequence_path)
-    evaluate_sequence(image_list, max_frames=200)
+    results = evaluate_sequence(image_list)
+    print("\n============================")
+    print(f"Proxy Evaluation on {os.path.basename(sequence_path)}")
+    print("============================")
+
+    print(f"\n{os.path.basename(sequence_path)}:")
+    for k, v in results.items():
+        print(f"{k}: {v:.4f}")

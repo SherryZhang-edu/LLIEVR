@@ -64,7 +64,7 @@ def main():
     # 打印对比结果
     # ===============================
     print("\n============================")
-    print("Proxy Evaluation on TUM")
+    print("Proxy Evaluation on video2_walk")
     print("============================")
 
     print("\nRAW:")

@@ -21,7 +21,7 @@ def resize_image_cv(image_bgr, target_size=(600, 400)):
 def main():
 
     # sequence_path = "datasets/lle/darkZurich/set1"  # 替换成你的 TUM 数据集路径
-    sequence_path  = "datasets\\RealData\\video3_flash"
+    sequence_path  = "datasets\\RealData\\video4_office"
     # image_list = load_tum_rgb_list(sequence_path)
     image_list = load_darkzurich_rgb_list(sequence_path)
 
@@ -31,7 +31,7 @@ def main():
     # image_list = image_list[:10]
 
     # ===============================
-    # Raw
+    # 1Raw
     # ===============================
     print("\nRunning RAW evaluation...")
     results_raw = evaluate_sequence(image_list,
@@ -45,7 +45,7 @@ def main():
         image_list,
         enhance=True,
         enhance_mode='every',
-        save_vis=True, vis_save_dir = "experiments\\results\\RealData\\video3_flash_enhanced"
+        save_vis=True, vis_save_dir = "experiments\\results\\RealData\\video4_office_enhanced"
     )
     
     # ===============================
@@ -57,14 +57,14 @@ def main():
         enhance=True,
         enhance_mode='adaptive',
         tau_mu=50,
-        tau_I=10,save_vis=True, vis_save_dir = "experiments\\results\\RealData\\video3_flash_adaptiveenhanced"
+        tau_I=10
     )
 
     # ===============================
     # 打印对比结果
     # ===============================
     print("\n============================")
-    print("Proxy Evaluation on video3_flash")
+    print("Proxy Evaluation on video4_office")
     print("============================")
 
     print("\nRAW:")

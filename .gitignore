@@ -4,6 +4,7 @@
 datasets/
 experiments/
 vis_output/
+video/
 
 # ==============================
 # Model weights / binaries

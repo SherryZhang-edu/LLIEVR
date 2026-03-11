@@ -9,15 +9,19 @@ interpreter = load_model(model_path)
 def enhance(img):
     return enhance_image_cv(img, interpreter)
 
-sequence_path = "datasets/lle/darkZurich/set1_resized"  # 替换成你的 TUM 数据集路径
-ouptut_path = "experiments/results/darkZurich/set1_enhanced"  # 替换成你想保存增强图像的路径
+# sequence_path = "datasets/lle/darkZurich/set1_resized"  # 替换成你的 TUM 数据集路径
+# ouptut_path = "experiments/results/darkZurich/set1_enhanced"  # 替换成你想保存增强图像的路径
+
+sequence_path = "datasets\\RealData\\video3_flash"  # 替换成你的 TUM 数据集路径
+ouptut_path = "experiments\\results\\RealData\\video3_flash_enhanced"  # 替换成你想保存增强图像的路径
+
 os.makedirs(ouptut_path, exist_ok=True)
 
 image_list = load_darkzurich_rgb_list(sequence_path)
 
 print("Total frames:", len(image_list))
 
-image_list = image_list[:10]
+# image_list = image_list[:10]
 
 for img_path in image_list:
     img = cv2.imread(img_path)

@@ -53,12 +53,15 @@ def match_and_visualize(img1, img2, orb, bf):
     # 画投影框（运动可视化）
     h, w = img1.shape[:2]
     corners = np.float32([[0, 0], [w, 0], [w, h], [0, h]]).reshape(-1, 1, 2)
+    # check whether there are enough inliers to compute a reliable homography
+    if H is None:
+        return vis, len(kp1), len(good), len(inlier_matches)
 
     projected = cv2.perspectiveTransform(corners, H)
 
     img2_with_box = img2.copy()
     projected = projected.astype(int)
-
+    
     for i in range(4):
         pt1 = tuple(projected[i][0])
         pt2 = tuple(projected[(i + 1) % 4][0])
@@ -131,6 +134,8 @@ def evaluate_sequence(image_list, save_dir="vis_output", max_frames=50):
 if __name__ == "__main__":
 
     # sequence_path = "datasets/lle/darkZurich/set1_resized"
-    sequence_path = "experiments/results/darkZurich/set1_enhanced"  
+    # sequence_path = "experiments/results/darkZurich/set1_enhanced"
+    sequence_path  = "datasets\\RealData\\video3_flash"
+    # sequence_path = "experiments\\results\\RealData\\video2_walk_enhanced"
     image_list = load_darkzurich_rgb_list(sequence_path)
-    evaluate_sequence(image_list, save_dir='vis_output/set1_enhanced')
+    evaluate_sequence(image_list, save_dir='vis_output/video3_flash')

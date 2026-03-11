@@ -21,14 +21,14 @@ def resize_image_cv(image_bgr, target_size=(600, 400)):
 def main():
 
     # sequence_path = "datasets/lle/darkZurich/set1"  # 替换成你的 TUM 数据集路径
-    sequence_path  = "datasets\\RealData\\video2_walk"
+    sequence_path  = "datasets\\RealData\\video3_flash"
     # image_list = load_tum_rgb_list(sequence_path)
     image_list = load_darkzurich_rgb_list(sequence_path)
 
     print("Total frames:", len(image_list))
 
     # 可选：限制帧数加快测试
-    image_list = image_list[:10]
+    # image_list = image_list[:10]
 
     # ===============================
     # 1Raw
@@ -54,7 +54,7 @@ def main():
     results_adaptive = evaluate_sequence(
         image_list,
         enhance=True,
-        enhance_mode='every',
+        enhance_mode='adaptive',
         tau_mu=50,
         tau_I=10
     )

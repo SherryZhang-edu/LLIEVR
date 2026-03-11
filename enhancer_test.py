@@ -7,7 +7,8 @@ import cv2
 
 model_path = 'lolv1.tflite'  
 # input_image_path = 'datasets\\lle\\darkZurich\\set1\\GP010376_frame_000297_rgb_anon.png'  
-input_image_path = 'datasets\\lle\\LOLdataset\\eval15\\low\\665.png'
+# input_image_path = 'datasets\\lle\\LOLdataset\\eval15\\low\\665.png'
+input_image_path = "datasets\\RealData\\video1_indoor\\frame_0001.png"
 # 1. 加载模型（只需加载一次）
 interpreter = load_model(model_path)
 

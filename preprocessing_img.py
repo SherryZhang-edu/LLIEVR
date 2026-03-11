@@ -8,6 +8,7 @@ def resize_image_cv(image_bgr, target_size=(600, 400)):
 
 img_dir = "datasets/lle/darkZurich/set1"
 save_dir = "datasets/lle/darkZurich/set1_resized"
+
 os.makedirs(save_dir, exist_ok=True)
 for img_name in os.listdir(img_dir):
     if not img_name.lower().endswith(('.png', '.jpg', '.jpeg')):

@@ -28,7 +28,7 @@ def compute_tentative_matches(des1, des2, bf, ratio=0.75):
 
 
 # =========================================================
-# 计算 RANSAC inliers（使用 Fundamental Matrix）
+# 计算 RANSAC inliers（使用 Homography Matrix）
 # =========================================================
 def compute_ransac_inliers(kp1, kp2, matches):
 

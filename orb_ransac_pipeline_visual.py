@@ -24,8 +24,8 @@ def match_and_visualize(img1, img2, orb, bf):
         if m.distance < 0.75 * n.distance:
             good.append(m)
 
-    if len(good) < 8:
-        return None, len(kp1), len(good), 0
+    # if len(good) < 8:
+    #     return None, len(kp1), len(good), 0
 
     pts1 = np.float32([kp1[m.queryIdx].pt for m in good])
     pts2 = np.float32([kp2[m.trainIdx].pt for m in good])

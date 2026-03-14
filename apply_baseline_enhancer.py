@@ -6,7 +6,7 @@ from utils.enhancer import  enhance_gamma, enhance_he, enhance_clahe
 import cv2
 from utils.evaluation import load_darkzurich_rgb_list
 
-source_image_dir = 'datasets\\RealData\\video1_indoor'
+source_image_dir = 'datasets\\RealData\\video_flash_moment'
 output_image_dir = 'experiments\\results\\RealData'
 
 image_list = load_darkzurich_rgb_list(source_image_dir)

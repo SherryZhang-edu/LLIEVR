@@ -78,7 +78,7 @@ if __name__ == "__main__":
     results = evaluate_sequence(image_list)
     print("\n============================")
     print(f"Proxy Evaluation on {os.path.basename(sequence_path)}")
-    print("============================")
+    print("============================")  
 
     print(f"\n{os.path.basename(sequence_path)}:")
     for k, v in results.items():
